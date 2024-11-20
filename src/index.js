@@ -27,7 +27,12 @@ const __dirname = path.dirname(__filename);
 // Configuración de la aplicación Express
 app.use(express.json());
 app.use(express.urlencoded({extended: true, }));
-app.use(cors())
+// Configuración de CORS
+app.use(cors({
+  origin: 'https://backend-one-alpha-11.vercel.app/',  // URL de tu frontend desplegado
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 //Inicializamos passport para progeter las rutas de administradores
 app.use(passport.initialize());
 
@@ -36,7 +41,6 @@ app.use(passport.initialize());
 app.use(express.static(path.join(__dirname, '..', 'views')));
 
 
-app.use(express.static(path.join(__dirname, 'dist')));
 
 
 // Ruta raíz
@@ -58,10 +62,7 @@ app.get('/get_horarios', (req, res) => {
 //Router de usuarios
 app.use('/users', users);
 
-// Ruta para la página principal
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'EducarLab.html'));
-});
+
 
 // Ruta para obtener todos los comentarios
 app.get('/comentarios', async (req, res) => {
