@@ -1,0 +1,135 @@
+body {
+    font-family: Kubic, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('../images/EDUC-LAB_PORTADA_YT.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #0d426d;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px; /* Separación del contenedor */
+    margin-top: 5px;
+}
+
+.inicio-boton-container {
+    position: absolute;
+    top: 20px;
+    left: 20px; 
+}
+
+.inicio-boton {
+    padding: 12px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: 40px; /* Tamaño fijo para el ícono */
+    height: 40px; /* Tamaño fijo para el ícono */
+}
+
+.inicio-boton img {
+    width: 100%; /* Asegura que la imagen ocupe todo el ancho del botón */
+    height: 100%; /* Asegura que la imagen ocupe toda la altura del botón */
+    object-fit: contain; /* Mantiene la proporción de la imagen */
+}
+
+
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: white;
+    text-align: left; /* Alineamos el texto del label a la izquierda */
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 400px;
+    height: auto;
+}
+
+a {
+    color: white; /* Color del enlace */
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.container {
+    padding: 20px; /* Padding interno del contenedor */
+    background-color: #0d426d;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    max-width: 360px; /* Reducimos el ancho máximo */
+    width: 100%;
+    text-align: center;
+    margin: 0 auto; /* Centrado horizontal */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Alineamos el formulario para que ocupe todo el ancho */
+    gap: 15px; /* Espaciado uniforme entre los elementos del formulario */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alineamos los elementos a la izquierda */
+    width: 100%;
+}
+
+input {
+    padding: 12px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%; /* Aseguramos que el input ocupe el ancho completo del contenedor */
+}
+
+.btn {
+    padding: 12px;
+    background-color: #EE3D8F;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn:hover {
+    background-color: #EE3D8F;
+}
+
+.error-message, .success-message {
+    margin-top: 10px;
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/styless_login.css">
+</head>
+<body>
+    <div class="logo-container">
+        <a href="./public/ConectarLab.html"></a>
+        <img src="images/1080x1920 EDUCARLAB Chaco_Gris.png" alt="Logo" class="logo">
+    </div>
+
+    <div class="container">
+        <h2>Registro</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Registrar</button>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+    
+            await registerUser(email, password);
+        });
+    
+        async function registerUser(email, password) {
+            try {
+                const response = await fetch('http://localhost:3000/users/createAdmin', { // Cambia aquí la ruta
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+    
+                if (response.status === 201) {
+                    alert('Usuario registrado correctamente!');
+                    window.location.href = '/login.html'; // Redirigir al login después del registro
+                } else {
+                    const responseData = await response.json();
+                    document.getElementById('errorMessage').innerText = responseData.data || 'Error al registrar el usuario.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').innerText = 'Error en el registro. Intenta nuevamente.';
+            }
+        }
+    </script>
+</body>
+</html>

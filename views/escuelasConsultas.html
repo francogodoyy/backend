@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Escuelas</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            display: block;
+            max-height: 400px; /* Ajusta la altura según sea necesario */
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .selected {
+            background-color: #d9edf7;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Escuelas</h1>
+        <input type="text" id="nombreInput" placeholder="Buscar por nombre de escuela" oninput="filterSchools()">
+        <select id="mesInput" onchange="filterSchools()">
+            <option value="">Seleccionar mes</option>
+            <option value="01">Enero</option>
+            <option value="02">Febrero</option>
+            <option value="03">Marzo</option>
+            <option value="04">Abril</option>
+            <option value="05">Mayo</option>
+            <option value="06">Junio</option>
+            <option value="07">Julio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+        </select>
+        <input type="number" id="anioInput" placeholder="Año" min="1900" max="2100" onchange="filterSchools()">
+        <button id="searchButton">Buscar</button>
+
+        <table border="1" id="resultTable">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Nombre Escuela</th>
+                    <th>Localidad</th>
+                    <th>Nombre Director</th>
+                    <th>Grado Escuela</th>
+                    <th>Turno</th>
+                    <th>Cantidad Alumnos</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Fecha</th>
+                    <th>Horario</th>
+                    <th>CUE</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div class="buttons">
+            <button id="inscripcionesComunidad" onclick="window.location.href='comunidadConsultas.html'">Inscripciones Comunidad</button>
+            <button id="inscripcionesDocentes" onclick="window.location.href='docentesConsultas.html'">Inscripciones Docentes</button>
+            <button id="comentarios" onclick="window.location.href='comentarios.html'">Comentarios</button>
+            <button id="tallerComunidad" onclick="window.location.href='taller_comunidad.html'">Taller Comunidad</button>
+            <button id="tallerDocente" onclick="window.location.href='taller_docente.html'">Taller Docente</button>
+        </div>
+        
+        <button id="cancelTurnoButton" style="display:none;">Cancelar Turno</button>
+    </div>
+
+    <script>
+        const resultTable = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+        let schools = [];
+        let selectedRow = null;
+
+        async function loadAllSchools() {
+            try {
+                const response = await fetch('http://localhost:3000/escuelas');
+                if (!response.ok) {
+                    throw new Error('No se encontraron resultados');
+                }
+                schools = await response.json();
+                updateTable(schools);
+            } catch (error) {
+                console.error('Error al buscar los datos:', error);
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = error.message;
+                document.body.appendChild(errorMessage);
+            }
+        }
+
+        function updateTable(data) {
+            resultTable.innerHTML = '';
+            data.forEach(escuela => {
+                const row = document.createElement('tr');
+                row.onclick = () => {
+                    if (selectedRow) {
+                        selectedRow.classList.remove('selected');
+                    }
+                    selectedRow = row;
+                    selectedRow.classList.add('selected');
+                    document.getElementById('cancelTurnoButton').style.display = 'inline';
+                };
+
+                const columns = ['id', 'nombre_escuela', 'localidad_escuela', 'nombre_director', 'grado_escuela', 'turno', 'cantidad_alumnos', 'telefono', 'email', 'fecha', 'horario', 'cue', 'estado'];
+                columns.forEach(column => {
+                    const cell = document.createElement('td');
+                    cell.textContent = escuela[column] || '';
+                    row.appendChild(cell);
+                });
+
+                resultTable.appendChild(row);
+            });
+        }
+
+        function filterSchools() {
+            const searchInput = document.getElementById('nombreInput').value.toLowerCase();
+            const mesInput = document.getElementById('mesInput').value;
+            const anioInput = document.getElementById('anioInput').value;
+
+            const filteredSchools = schools.filter(escuela => {
+                const matchesName = escuela.nombre_escuela.toLowerCase().includes(searchInput);
+                const matchesMonth = mesInput === '' || (escuela.fecha && escuela.fecha.slice(5, 7) === mesInput);
+                const matchesYear = anioInput === '' || (escuela.fecha && escuela.fecha.slice(0, 4) === anioInput);
+                return matchesName && matchesMonth && matchesYear;
+            });
+
+            updateTable(filteredSchools);
+        }
+
+        document.getElementById('cancelTurnoButton').addEventListener('click', async () => {
+            if (selectedRow) {
+                const id = selectedRow.cells[0].textContent; // Asegúrate de que esta sea la forma correcta de obtener el ID
+                try {
+                    const response = await fetch(`http://localhost:3000/cancelar_turno/${id}`, {
+                        method: 'PUT'
+                    });
+                    if (response.ok) {
+                        alert('Turno cancelado con éxito');
+                        loadAllSchools(); // Recargar la lista de escuelas
+                    } else {
+                        throw new Error('No se pudo cancelar el turno');
+                    }
+                } catch (error) {
+                    console.error('Error al cancelar el turno:', error);
+                    alert('Error al cancelar el turno');
+                }
+            }
+        });
+
+        window.onload = loadAllSchools;
+    </script>
+</body>
+</html>
